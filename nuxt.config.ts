@@ -8,7 +8,16 @@ export default defineNuxtConfig({
   },
 
   icon: {
-    collections: ['heroicons']
+    clientBundle: {
+      scan: true,
+      icons: [
+        'heroicons-outline:chevron-down',
+        'heroicons-outline:chevron-up',
+        'heroicons-outline:trash',
+        'heroicons-outline:pencil',
+        'heroicons-outline:calendar',
+      ]
+    }
   },
   app: {
     baseURL: '/diplom/'
