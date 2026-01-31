@@ -6,6 +6,10 @@ export default defineNuxtConfig({
   ui: {
     fonts: false
   },
+
+  icon: {
+    collections: ['heroicons']
+  },
   app: {
     baseURL: '/diplom/'
   }
