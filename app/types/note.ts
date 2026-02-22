@@ -14,6 +14,8 @@ export interface Note {
   color?: NoteColor
   dueDate?: string
   category?: string
+  /** URL изображений (data URL base64 для хранения в localStorage) */
+  images?: string[]
 }
 
 export type SortOption = 'newest' | 'oldest' | 'priority' | 'title' | 'dueDate'

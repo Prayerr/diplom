@@ -151,6 +151,7 @@ const handleNoteSubmit = (data: {
   tags?: string[]
   color?: Note['color']
   dueDate?: string
+  images?: string[]
 }) => {
   if (editingNote.value) {
     updateNote(editingNote.value.id, {
@@ -159,7 +160,8 @@ const handleNoteSubmit = (data: {
       priority: data.priority,
       tags: data.tags,
       color: data.color,
-      dueDate: data.dueDate
+      dueDate: data.dueDate,
+      images: data.images
     })
     editingNote.value = null
   } else {
@@ -167,7 +169,8 @@ const handleNoteSubmit = (data: {
       priority: data.priority,
       tags: data.tags,
       color: data.color,
-      dueDate: data.dueDate
+      dueDate: data.dueDate,
+      images: data.images
     })
   }
 }

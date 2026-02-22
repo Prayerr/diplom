@@ -38,6 +38,7 @@ export const useNotes = () => {
       tags?: string[]
       color?: Note['color']
       dueDate?: string
+      images?: string[]
     }
   ) => {
     const newNote: Note = {
@@ -51,7 +52,8 @@ export const useNotes = () => {
       priority: options?.priority,
       tags: options?.tags,
       color: options?.color,
-      dueDate: options?.dueDate
+      dueDate: options?.dueDate,
+      images: options?.images
     }
     notes.value.unshift(newNote)
     saveNotes()

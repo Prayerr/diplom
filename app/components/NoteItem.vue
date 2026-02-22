@@ -85,6 +85,23 @@
               </UBadge>
             </div>
 
+            <!-- Изображения -->
+            <div v-if="note.images && note.images.length > 0" class="flex flex-wrap gap-2 mb-2">
+              <button
+                v-for="(img, idx) in note.images"
+                :key="idx"
+                type="button"
+                class="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600 hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-primary"
+                @click="openImage(img)"
+              >
+                <img
+                  :src="img"
+                  alt="Изображение заметки"
+                  class="w-16 h-16 object-cover"
+                />
+              </button>
+            </div>
+
             <!-- Теги -->
             <div v-if="note.tags && note.tags.length > 0" class="flex flex-wrap gap-1 mb-2">
               <UBadge
@@ -165,6 +182,15 @@ const handleDelete = () => {
   if (confirm('Вы уверены, что хотите удалить эту заметку?')) {
     deleteNote(props.note.id)
     emit('delete', props.note.id)
+  }
+}
+
+const openImage = (src: string) => {
+  if (typeof window === 'undefined') return
+  const w = window.open('', '_blank')
+  if (w) {
+    w.document.write(`<img src="${src}" style="max-width:100%;height:auto;" alt="Изображение" />`)
+    w.document.close()
   }
 }
 

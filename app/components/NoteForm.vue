@@ -106,6 +106,52 @@
           <label
             class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block"
           >
+            Изображения
+          </label>
+          <div class="flex flex-wrap gap-2 mb-2">
+            <label
+              class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
+              <UIcon name="i-heroicons-photo" class="w-5 h-5 text-primary" />
+              <span>Добавить изображение</span>
+              <input
+                type="file"
+                accept="image/*"
+                class="hidden"
+                multiple
+                @change="onImagesSelected"
+              />
+            </label>
+          </div>
+          <div
+            v-if="formData.images && formData.images.length > 0"
+            class="flex flex-wrap gap-2"
+          >
+            <div
+              v-for="(img, idx) in formData.images"
+              :key="idx"
+              class="relative group rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-800"
+            >
+              <img
+                :src="img"
+                alt="Превью"
+                class="w-20 h-20 object-cover"
+              />
+              <button
+                type="button"
+                class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"
+                @click="removeImage(idx)"
+              >
+                <UIcon name="i-heroicons-trash" class="w-6 h-6 text-white" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label
+            class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block"
+          >
             Теги (через запятую)
           </label>
           <UInput
@@ -174,6 +220,7 @@ const emit = defineEmits<{
       tags?: string[];
       color?: NoteColor;
       dueDate?: string;
+      images?: string[];
     }
   ];
   cancel: [];
@@ -186,6 +233,7 @@ const formData = ref({
   tags: [] as string[],
   color: undefined as NoteColor | undefined,
   dueDate: undefined as string | undefined,
+  images: [] as string[],
 });
 
 const tagsInput = ref("");
@@ -259,6 +307,7 @@ watch(
         tags: note.tags || [],
         color: note.color,
         dueDate: note.dueDate,
+        images: note.images ? [...note.images] : [],
       };
       tagsInput.value = note.tags?.join(", ") || "";
     } else {
@@ -269,6 +318,7 @@ watch(
         tags: [],
         color: undefined,
         dueDate: undefined,
+        images: [],
       };
       tagsInput.value = "";
     }
@@ -306,6 +356,29 @@ const removeTag = (tag: string) => {
   tagsInput.value = formData.value.tags.join(", ");
 };
 
+const MAX_IMAGE_SIZE = 2 * 1024 * 1024; // 2 MB
+const onImagesSelected = (e: Event) => {
+  const input = e.target as HTMLInputElement;
+  const files = input.files;
+  if (!files?.length) return;
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i]
+    if (!file || !file.type.startsWith("image/")) continue
+    if (file.size > MAX_IMAGE_SIZE) continue
+    const reader = new FileReader()
+    reader.onload = () => {
+      const dataUrl = reader.result as string
+      formData.value.images = [...(formData.value.images || []), dataUrl]
+    }
+    reader.readAsDataURL(file)
+  }
+  input.value = "";
+};
+
+const removeImage = (index: number) => {
+  formData.value.images = formData.value.images?.filter((_, i) => i !== index) || [];
+};
+
 const handleSubmit = async () => {
   if (!formData.value.title.trim()) return;
 
@@ -321,6 +394,7 @@ const handleSubmit = async () => {
       tags: formData.value.tags,
       color: formData.value.color,
       dueDate: formData.value.dueDate,
+      images: formData.value.images?.length ? formData.value.images : undefined,
     });
 
     if (!isEditing.value) {
@@ -331,6 +405,7 @@ const handleSubmit = async () => {
         tags: [],
         color: undefined,
         dueDate: undefined,
+        images: [],
       };
       tagsInput.value = "";
     }
@@ -348,6 +423,7 @@ const cancelEdit = () => {
     tags: [],
     color: undefined,
     dueDate: undefined,
+    images: [],
   };
   tagsInput.value = "";
 };
