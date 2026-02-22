@@ -15,5 +15,8 @@ export default defineNuxtConfig({
       scan: false    
     },
     fallbackToApi: true 
-  }
+  },
+  ui: {
+    fonts: false
+  },
 })

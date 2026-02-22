@@ -56,6 +56,35 @@
           </div>
         </div>
       </div>
+
+      <UDivider class="my-6" />
+
+      <div v-if="allTags.length" class="space-y-3 mt-6">
+        <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-3">
+          Теги
+        </h3>
+
+        <div class="flex flex-wrap gap-2 px-3">
+          <NuxtLink
+            v-for="tag in allTags"
+            :key="tag"
+            :to="`/?tag=${tag}`"
+          >
+            <UBadge
+              color="neutral"
+              variant="soft"
+              class="cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800"
+            >
+              {{ tag }}
+            </UBadge>
+          </NuxtLink>
+        </div>
+      </div>
+      <div v-else class="space-y-3 mt-6">
+        <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wider px-3">
+          Тегов пока нет
+        </h3>
+      </div>
     </div>
   </aside>
 </template>
@@ -64,9 +93,10 @@
 import type { NoteCategory } from '~/types/note'
 
 const route = useRoute()
-const { getStats } = useNotes()
+const { getStats, getAllTags } = useNotes()
 
 const stats = computed(() => getStats())
+const allTags = computed(() => getAllTags())
 
 const menuItems = computed(() => [
   {
