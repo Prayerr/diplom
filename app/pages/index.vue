@@ -1,10 +1,58 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-950">
     <div class="flex">
-      <Sidebar />
+      <div class="hidden lg:block">
+        <Sidebar />
+      </div>
 
-      <main class="flex-1 p-6 lg:p-8">
-        <div class="max-w-4xl mx-auto space-y-6">
+      <div class="flex-1">
+        <header class="lg:hidden sticky top-0 z-40 backdrop-blur bg-gray-50/80 dark:bg-gray-950/80 border-b border-gray-200 dark:border-gray-800">
+          <div class="p-3 flex items-center justify-between">
+            <div class="flex items-center gap-3 min-w-0">
+              <UButton
+                color="neutral"
+                variant="soft"
+                icon="i-heroicons-bars-3"
+                @click="isSidebarOpen = true"
+              />
+              <div class="min-w-0">
+                <div class="font-semibold text-gray-900 dark:text-white truncate">
+                  Заметки
+                </div>
+                <div class="text-xs text-gray-600 dark:text-gray-400 truncate">
+                  Ваши заметки и задачи
+                </div>
+              </div>
+            </div>
+
+            <UButton
+              color="neutral"
+              variant="soft"
+              icon="i-heroicons-plus"
+              @click="scrollToForm"
+            />
+          </div>
+        </header>
+
+        <Transition name="fade">
+          <div
+            v-if="isSidebarOpen"
+            class="lg:hidden fixed inset-0 z-50"
+            role="dialog"
+            aria-modal="true"
+          >
+            <div
+              class="absolute inset-0 bg-black/40"
+              @click="isSidebarOpen = false"
+            />
+            <div class="absolute left-0 top-0 h-full w-64 bg-gray-50 dark:bg-gray-900 overflow-y-auto">
+              <Sidebar />
+            </div>
+          </div>
+        </Transition>
+
+        <main class="flex-1 p-4 sm:p-6 lg:p-8">
+          <div class="max-w-4xl mx-auto space-y-6">
           <!-- Заголовок страницы -->
           <div class="mb-6">
             <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
@@ -16,16 +64,18 @@
           </div>
 
           <!-- Форма добавления/редактирования заметки -->
-          <NoteForm
-            :note="editingNote"
-            @submit="handleNoteSubmit"
-            @cancel="cancelEdit"
-          />
+          <div ref="formRef" class="scroll-mt-24">
+            <NoteForm
+              :note="editingNote"
+              @submit="handleNoteSubmit"
+              @cancel="cancelEdit"
+            />
+          </div>
 
           <!-- Фильтры и действия -->
           <div class="flex flex-col gap-4">
             <div class="flex items-center justify-between flex-wrap gap-4">
-              <div class="flex items-center gap-2 flex-1 min-w-64">
+              <div class="flex items-center gap-2 flex-1 min-w-0 sm:min-w-64">
                 <UInput
                   v-model="searchQuery"
                   placeholder="Поиск заметок..."
@@ -83,6 +133,7 @@
     />
         </div>
       </main>
+      </div>
     </div>
   </div>
 </template>
@@ -92,6 +143,27 @@ import type { Note, NoteCategory, SortOption } from '~/types/note'
 
 const route = useRoute()
 const { notes, addNote, updateNote, deleteNote, getFilteredNotes, getStats, loadNotes, getAllTags } = useNotes()
+
+const isSidebarOpen = ref(false)
+const formRef = ref<HTMLElement | null>(null)
+
+const scrollToForm = () => {
+  nextTick(() => {
+    formRef.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  })
+}
+
+watch(
+  () => route.fullPath,
+  () => {
+    isSidebarOpen.value = false
+  }
+)
+
+watch(isSidebarOpen, (open) => {
+  if (!process.client) return
+  document.body.style.overflow = open ? 'hidden' : ''
+})
 
 onMounted(() => {
   loadNotes()
@@ -200,3 +272,14 @@ useHead({
   ]
 })
 </script>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

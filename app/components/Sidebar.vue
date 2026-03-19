@@ -1,5 +1,5 @@
 <template>
-  <aside class="w-64 bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 h-screen sticky top-0 overflow-y-auto">
+  <aside class="w-64 bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 h-full lg:h-screen lg:sticky lg:top-0 overflow-y-auto">
     <div class="p-4">
       <div class="mb-6">
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">

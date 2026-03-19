@@ -30,7 +30,7 @@
           :rows="4"
         />
 
-        <div class="flex items-center gap-2">
+        <div class="flex flex-col sm:flex-row items-stretch gap-2">
           <div class="flex-1">
             <label
               class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block"
@@ -135,7 +135,7 @@
               <img
                 :src="img"
                 alt="Превью"
-                class="w-20 h-20 object-cover"
+                class="w-16 h-16 sm:w-20 sm:h-20 object-cover"
               />
               <button
                 type="button"
@@ -177,12 +177,12 @@
           </div>
         </div>
 
-        <div class="flex items-center gap-2 pt-2">
+        <div class="flex flex-col sm:flex-row items-stretch gap-2 pt-2">
           <UButton
             type="submit"
             :loading="isSubmitting"
             :disabled="!formData.title.trim()"
-            class="flex-1"
+            class="w-full sm:flex-1"
           >
             {{ isEditing ? "Сохранить" : "Добавить" }}
           </UButton>
@@ -191,6 +191,7 @@
             color="neutral"
             variant="ghost"
             @click="cancelEdit"
+            class="w-full sm:w-auto"
           >
             Отмена
           </UButton>
